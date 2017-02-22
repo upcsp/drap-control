@@ -80,7 +80,7 @@ void eepromInit() {
 
 float baseLevelPressure=1023.25f;
 
-void bpm180Init(){
+void bmp180Init(){
   Serial.println("Pressure Sensor Test");
   sensorStatus=bmp.begin();
   
@@ -124,21 +124,10 @@ void bpm180Init(){
   }
 }
 
-enum ACTUATOR_STATE : uint8_t {
-	STATE_DISENGAGED,
-	STATE_ARMED,
-	STATE_ENGAGED,
-	STATE_EXPIRED
-};
 
-enum ACTUATOR_TYPE : uint8_t {
-	TYPE_DROGUE,
-	TYPE_MAIN_CHUTE
-};
-
-ACTUATOR_STATE states[2]={STATE_DISENGAGED};
 
 void actuatorInit(){
-  
+  pinMode(2,OUTPUT);
+  pinMode(3,OUTPUT);
 }
 

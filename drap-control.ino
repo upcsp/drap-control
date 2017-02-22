@@ -5,6 +5,10 @@
 
 #include "bmp180.h"
 
+#include "actuators.h"
+
+uint16_t timeStep=100;
+
 const uint8_t bufferSize=32;
 uint16_t dataBuffer[bufferSize];
 
@@ -15,13 +19,23 @@ void waitForMovement(){
     Serial.print("Within margin:  ");
     Serial.println(altitude);
     dataBuffer[pos%bufferSize]=altitude;
-    delay(200);
-    altitude=getHeight();
+    delay(timeStep);
+    altitude=getAltitude();
+    ++pos;
   }
-  Serial.println("Movement detected.");
+  Serial.print("Movement detected.");
+  Serial.print("Last pos:");
+  Serial.println(pos);
   
-  for(int i=0;i<32;i++){
-    EEPROM.put(writePos,dataBuffer[(pos-bufferSize+i+1)%bufferSize]);
+  for(int i=0;i<bufferSize;i++){
+    uint8_t bufferPos=(pos-bufferSize+i)%bufferSize;
+    Serial.print("BufferPos:");
+    Serial.println(bufferPos);
+    Serial.print("WritePos:");
+    Serial.println(writePos);
+    Serial.print("Value:");
+    Serial.println(dataBuffer[bufferPos]);
+    EEPROM.put(writePos,dataBuffer[bufferPos]);
     writePos+=sizeof(uint16_t);
   }
   
@@ -35,24 +49,42 @@ void setup() {
   eepromInit();
   
   // Initialize atmospheric sensor and height  
-  bpm180Init();
+  bmp180Init();
   
   // Initialize actuators
   actuatorInit();
 
-  waitForMovement();
-
+  // If it's already launched it should go straight to the loop
+  if(eeprom_state==FLAG_FIRST_WRITE){
+    waitForMovement();
+  }
 }
 
 void loop() {
+  uint16_t altitude = getAltitude();
+  Serial.println(altitude);
+  // Write data to eeprom
+  //TODO:Check bounds of writePos
+  EEPROM.put(writePos,altitude);
+  writePos+=sizeof(uint16_t);
+
+
+  // Check state of actuators
+  checkStates(altitude);
+
+  // Check ending condition
+  if(altitude<5&&mainChuteState==STATE_EXPIRED&&drogueState==STATE_EXPIRED||writePos==EEPROM.length()){
+    //Successfully terminate EEPROM
+    EEPROM.write(FLAG_ADDR,FLAG_COMPLETED);
+    digitalWrite(LED_BUILTIN, HIGH);
+    while(true){
+      
+    }
+  }
   
   digitalWrite(LED_BUILTIN, HIGH);
-  delay(500);
+  delay(timeStep/2);
   digitalWrite(LED_BUILTIN, LOW);
-  delay(500);
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(500);
-  digitalWrite(LED_BUILTIN, LOW);
-  delay(500);
+  delay(timeStep/2);
 
 }

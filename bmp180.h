@@ -1,15 +1,14 @@
 #pragma once
 
-
 extern Adafruit_BMP085_Unified bmp;
 extern float baseLevelPressure;
 
 float getPressure(){
-  sensors_event_t event;
-  bmp.getEvent(&event);
-  while (event.type!=SENSOR_TYPE_PRESSURE) {
-    bmp.getEvent(&event);
-  }
+	sensors_event_t event;
+	do {
+		bmp.getEvent(&event);
+	}while (event.type!=SENSOR_TYPE_PRESSURE);
+
   return event.pressure;
 }
 
@@ -19,7 +18,6 @@ float getTemperature(){
   return temp;
 }
 
-float getHeight(){
+float getAltitude(){
   return bmp.pressureToAltitude(baseLevelPressure,getPressure(),getTemperature());
 }
-
