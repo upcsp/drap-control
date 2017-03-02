@@ -1,11 +1,14 @@
 #include <EEPROM.h>
 #include <Adafruit_BMP085_U.h>
 
-#include "moduleInit.h"
+#include "eeprom.h"
 
 #include "bmp180.h"
 
 #include "actuators.h"
+
+
+#include "moduleInit.h"
 
 uint16_t timeStep=100;
 
@@ -45,14 +48,16 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   Serial.begin(9600);
 
+  // Initialize actuators
+  actuatorInit();
+
   // Initialize EEPROM
   eepromInit();
   
   // Initialize atmospheric sensor and height  
   bmp180Init();
   
-  // Initialize actuators
-  actuatorInit();
+  
 
   // If it's already launched it should go straight to the loop
   if(eeprom_state==FLAG_FIRST_WRITE){
@@ -73,7 +78,7 @@ void loop() {
   checkStates(altitude);
 
   // Check ending condition
-  if(altitude<5&&mainChuteState==STATE_EXPIRED&&drogueState==STATE_EXPIRED||writePos==EEPROM.length()){
+  if(altitude<5&&mainChuteState==STATE_EXPIRED&&drogueState==STATE_EXPIRED||writePos>=EEPROM.length()){
     //Successfully terminate EEPROM
     EEPROM.write(FLAG_ADDR,FLAG_COMPLETED);
     digitalWrite(LED_BUILTIN, HIGH);
@@ -81,6 +86,7 @@ void loop() {
       
     }
   }
+
   
   digitalWrite(LED_BUILTIN, HIGH);
   delay(timeStep/2);

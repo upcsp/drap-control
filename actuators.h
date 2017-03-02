@@ -20,9 +20,12 @@ const uint8_t mainChutePin=3;
 
 const uint16_t drogueBuffSize=32;
 
+const uint8_t buzzerPin=4;
+const uint8_t switchSource=9;
+const uint8_t switchPin=10;
+
 void checkDrogueState(uint16_t altitude){
   const static uint32_t activationDuration=2000;//in millis
-  const static altOffset=2;
   
   static uint8_t pos=0;
   static uint16_t drogueBuff[drogueBuffSize]={0};
@@ -41,7 +44,7 @@ void checkDrogueState(uint16_t altitude){
     Serial.println("STATE_ARMED");
       drogueBuff[pos%drogueBuffSize]=altitude;
       pos++;
-      if(drogueBuff[pos%drogueBuffSize]>(altitude+altOffset)&&drogueBuff[(pos+1)%drogueBuffSize]>(altitude+altOffset)&&drogueBuff[(pos+2)%drogueBuffSize]>(altitude+altOffset)){
+      if(drogueBuff[pos%drogueBuffSize]>(altitude)&&drogueBuff[(pos+1)%drogueBuffSize]>(altitude)&&drogueBuff[(pos+2)%drogueBuffSize]>(altitude)){
         Serial.println("Engaging drogue.");
         drogueState=STATE_ENGAGED;
         activationTime=millis();
@@ -57,6 +60,7 @@ void checkDrogueState(uint16_t altitude){
         drogueState=STATE_EXPIRED;
         // disable pin
         digitalWrite(droguePin,LOW);
+        digitalWrite(buzzerPin,HIGH);
       }
 
       break;
@@ -113,4 +117,6 @@ void checkStates(uint16_t altitude){
   checkDrogueState(altitude);
   checkMainChuteState(altitude);
 }
+
+
 

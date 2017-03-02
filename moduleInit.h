@@ -5,18 +5,6 @@ Adafruit_BMP085_Unified bmp = Adafruit_BMP085_Unified(10085);
 bool sensorStatus=false;
 uint16_t writePos=0x000;
 
-const uint16_t FLAG_ADDR=0x000;
-const uint16_t PRESS_ADDR=0x002;
-const uint16_t DATA_ADDR=PRESS_ADDR+sizeof(float);
-
-enum EEPROM_FLAGS : uint8_t {
-	FLAG_BLANK=0x00,
-	FLAG_DEF=0xA0,
-	FLAG_FIRST_WRITE=0xA1,
-	FLAG_ADDITIONAL_WRITE=0xA2,
-	FLAG_COMPLETED=0xFF
-};
-
 EEPROM_FLAGS eeprom_state=FLAG_DEF;
 
 void eepromInit() {
@@ -27,6 +15,10 @@ void eepromInit() {
 
 
   if (flags==FLAG_BLANK) {// Buffer is in a blank state:
+    // clear whole buffer
+    for(uint16_t i=0;i<EEPROM.length();i++){
+      EEPROM.write(i,0x00);
+    }
     // write first write flag to address 0x000
     EEPROM.write(FLAG_ADDR,FLAG_FIRST_WRITE);
     eeprom_state=FLAG_FIRST_WRITE;
@@ -124,10 +116,14 @@ void bmp180Init(){
   }
 }
 
-
-
 void actuatorInit(){
-  pinMode(2,OUTPUT);
-  pinMode(3,OUTPUT);
+  pinMode(droguePin,OUTPUT);
+  digitalWrite(droguePin,LOW);
+  pinMode(mainChutePin,OUTPUT);
+  digitalWrite(mainChutePin,LOW);
+  
+  pinMode(buzzerPin,OUTPUT);
+  digitalWrite(buzzerPin,LOW);
+ 
 }
 
