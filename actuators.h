@@ -20,12 +20,12 @@ const uint8_t mainChutePin=3;
 
 const uint16_t drogueBuffSize=32;
 
-const uint8_t buzzerPin=4;
+const uint8_t buzzerPin=LED_BUILTIN;
 const uint8_t switchSource=9;
 const uint8_t switchPin=10;
 
 void checkDrogueState(uint16_t altitude){
-  const static uint32_t activationDuration=2000;//in millis
+  const static uint32_t activationDuration=3000;//in millis
   
   static uint8_t pos=0;
   static uint16_t drogueBuff[drogueBuffSize]={0};
@@ -72,7 +72,7 @@ void checkDrogueState(uint16_t altitude){
 }
 
 void checkMainChuteState(uint16_t altitude){
-  const static uint32_t activationDuration=2000;//in millis
+  const static uint32_t activationDuration=3000;//in millis
 
   static uint32_t activationTime=0;
 
@@ -117,6 +117,4 @@ void checkStates(uint16_t altitude){
   checkDrogueState(altitude);
   checkMainChuteState(altitude);
 }
-
-
 

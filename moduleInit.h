@@ -55,17 +55,11 @@ void eepromInit() {
     
   } else if (flags==FLAG_COMPLETED){// Buffer has been written to and terminated successfully
     Serial.println("EEPROM has been written to successfully and hasn't yest been unloaded. Aborting.");
-    uint16_t longt=400;
-    uint16_t shortt=100;
     while(true) {
-      digitalWrite(LED_BUILTIN, HIGH);
-      delay(shortt);
-      digitalWrite(LED_BUILTIN, LOW);
-      delay(shortt);
-      digitalWrite(LED_BUILTIN, HIGH);
-      delay(shortt);
-      digitalWrite(LED_BUILTIN, LOW);
-      delay(longt);
+      digitalWrite(buzzerPin, HIGH);
+      delay(900);
+      digitalWrite(buzzerPin, LOW);
+      delay(100);
     }
   }
 }
@@ -78,17 +72,12 @@ void bmp180Init(){
   
   if(!sensorStatus){
     Serial.println("BMP180 Sensor not detected. Aborting.");
-    uint16_t longt=400;
-    uint16_t shortt=100;
+    uint16_t shortt=50;
     while(true){
-      digitalWrite(LED_BUILTIN, HIGH);
-      delay(longt);
-      digitalWrite(LED_BUILTIN, LOW);
-      delay(longt);
       digitalWrite(LED_BUILTIN, HIGH);
       delay(shortt);
       digitalWrite(LED_BUILTIN, LOW);
-      delay(longt);
+      delay(shortt);
     }
     
   } else {
