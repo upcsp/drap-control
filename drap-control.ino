@@ -20,7 +20,7 @@ void waitForMovement(){
   uint16_t altitude=0;
   uint32_t mil=millis();
   bool buzzerState=false;
-  while(altitude<5){
+  while(altitude<10){
     Serial.print("Within margin:  ");
     Serial.println(altitude);
     dataBuffer[pos%bufferSize]=altitude;

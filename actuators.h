@@ -18,7 +18,7 @@ const uint8_t droguePin=2;
 ACTUATOR_STATE mainChuteState=STATE_DISENGAGED;
 const uint8_t mainChutePin=3;
 
-const uint16_t drogueBuffSize=32;
+const uint16_t drogueBuffSize=16;
 
 const uint8_t buzzerPin=LED_BUILTIN;
 const uint8_t switchSource=9;
@@ -35,7 +35,7 @@ void checkDrogueState(uint16_t altitude){
   switch (drogueState){
     case STATE_DISENGAGED:
     Serial.println("STATE_DISENGAGED");
-      if(altitude>8){
+      if(altitude>15){
         Serial.println("Arming drogue.");
         drogueState=STATE_ARMED;
       }
@@ -88,7 +88,7 @@ void checkMainChuteState(uint16_t altitude){
       break;
     case STATE_ARMED:
     Serial.println("STATE_ARMED");
-      if(altitude<7){//TODO:Find a proper altitude to activate this
+      if(altitude<70){//TODO:Find a proper altitude to activate this
         Serial.println("Engaging main chute.");
         mainChuteState=STATE_ENGAGED;
         activationTime=millis();
