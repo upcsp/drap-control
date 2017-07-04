@@ -19,5 +19,6 @@ float getTemperature(){
 }
 
 float getAltitude(){
-	return bmp.pressureToAltitude(baseLevelPressure,getPressure(),getTemperature());
+	float val=bmp.pressureToAltitude(baseLevelPressure,getPressure(),getTemperature());
+	return val>0?val:0;
 }

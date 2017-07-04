@@ -1,16 +1,19 @@
 #include <EEPROM.h>
 #include <Adafruit_BMP085_U.h>
 
-#include "moduleInit.h"
+#include "actuators.h"
+#include "eeprom.h"
 
 #include "bmp180.h"
 
-#include "actuators.h"
+#include "moduleInit.h"
 
 uint16_t timeStep=100;
 
 const uint8_t bufferSize=32;
 uint16_t dataBuffer[bufferSize];
+
+uint32_t loopMil=millis();
 
 void waitForMovement(){
 	uint16_t pos=0;
@@ -76,5 +79,4 @@ void loop() {
 	delay(timeStep/2);
 	digitalWrite(LED_BUILTIN, LOW);
 	delay(timeStep/2);
-
 }
