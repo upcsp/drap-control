@@ -9,15 +9,15 @@ float getPressure(){
 		bmp.getEvent(&event);
 	}while (event.type!=SENSOR_TYPE_PRESSURE);
 
-  return event.pressure;
+	return event.pressure;
 }
 
 float getTemperature(){
-  float temp;
-  bmp.getTemperature(&temp);
-  return temp;
+	float temp;
+	bmp.getTemperature(&temp);
+	return temp;
 }
 
 float getAltitude(){
-  return bmp.pressureToAltitude(baseLevelPressure,getPressure(),getTemperature());
+	return bmp.pressureToAltitude(baseLevelPressure,getPressure(),getTemperature());
 }
